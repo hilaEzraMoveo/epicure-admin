@@ -3,7 +3,9 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
   html,
   body {
-    color: ${({ theme }) => theme.primary};
+    background-color: #f0edf5;
+    height: 100vh;
+    width: 100%;
     padding: 0;
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
@@ -18,6 +20,16 @@ const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
+
+  .container {
+    display: flex;
+    gap:20px;
+    height: 100vh;
+  }
+
+  // .main-content {
+  //   flex: 1;
+  // }
 `;
 
 export default GlobalStyle;
