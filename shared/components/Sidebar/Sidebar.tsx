@@ -5,9 +5,9 @@ import Routes from "@/routes/routes";
 
 const Sidebar = () => {
   const content = [
-    { labe: Resources.restaurants, href: Routes["/restaurants"] },
-    { labe: Resources.chefs, href: Routes["/chefs"] },
-    { labe: Resources.dishes, href: Routes["/dishes"] },
+    { labe: Resources.restaurants, href: Routes.restaurants },
+    { labe: Resources.chefs, href: Routes.chefs },
+    { labe: Resources.dishes, href: Routes.dishes },
   ];
   return (
     <div className={styles.sidebar}>
