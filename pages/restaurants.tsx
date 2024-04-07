@@ -5,27 +5,35 @@ import { useEffect, useState } from "react";
 import { IRestaurant } from "@/models/restaurant.model";
 import { getRestaurants } from "@/services/restaurant.service";
 
-const restaurants = () => {
-  const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
-
-  useEffect(() => {
-    fetchRestaurantsData();
-  }, []);
-
-  const fetchRestaurantsData = async () => {
-    try {
-      const fetchedRestaurants = await getRestaurants();
-      setRestaurants(fetchedRestaurants);
-    } catch (error) {
-      console.error("Error fetching restaurants:", error);
-    }
-  };
-
+const Restaurants = ({
+  restaurantsData,
+}: {
+  restaurantsData: IRestaurant[];
+}) => {
   return (
     <div className="container">
       <Sidebar />
-      <GeneralTable data={restaurants} columns={RestaurantColumns} />
+      <GeneralTable data={restaurantsData} columns={RestaurantColumns} />
     </div>
   );
 };
-export default restaurants;
+
+export default Restaurants;
+
+export async function getServerSideProps() {
+  try {
+    const fetchedRestaurants = await getRestaurants();
+    return {
+      props: {
+        restaurantsData: fetchedRestaurants,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching restaurants:", error);
+    return {
+      props: {
+        restaurantsData: [],
+      },
+    };
+  }
+}
