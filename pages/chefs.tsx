@@ -20,6 +20,7 @@ const chefs = () => {
       console.error("Error fetching chefs:", error);
     }
   };
+
   return (
     <div className="container">
       <Sidebar></Sidebar>

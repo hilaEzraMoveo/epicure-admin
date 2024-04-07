@@ -1,26 +1,25 @@
-import Link from "next/link";
 import styles from "./Sidebar.module.css";
+import { LinkWidget } from "./Sidebar.style";
+import Resources from "@/resources/resources";
+import Routes from "@/routes/routes";
 
 const Sidebar = () => {
+  const content = [
+    { labe: Resources.restaurants, href: Routes["/restaurants"] },
+    { labe: Resources.chefs, href: Routes["/chefs"] },
+    { labe: Resources.dishes, href: Routes["/dishes"] },
+  ];
   return (
     <div className={styles.sidebar}>
       <h1>COLLECTION TYPES</h1>
       <ul>
-        <li>
-          <Link href="restaurants" style={{ textDecoration: "none" }}>
-            <span className={styles.link}>Restaurants</span>
-          </Link>
-        </li>
-        <li>
-          <Link href="chefs" style={{ textDecoration: "none" }}>
-            <span className={styles.link}>Chefs</span>
-          </Link>
-        </li>
-        <li>
-          <Link href="dishes" style={{ textDecoration: "none" }}>
-            <span className={styles.link}>Dishes</span>
-          </Link>
-        </li>
+        {content.map((page) => (
+          <li>
+            <LinkWidget href={page.href} key={page.href}>
+              <span className={styles.link}>{page.labe}</span>
+            </LinkWidget>
+          </li>
+        ))}
       </ul>
     </div>
   );

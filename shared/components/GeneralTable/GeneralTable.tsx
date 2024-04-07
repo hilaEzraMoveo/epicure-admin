@@ -1,5 +1,3 @@
-// components/GeneralTable.tsx
-
 import React from "react";
 import styles from "./GeneralTable.module.css";
 
