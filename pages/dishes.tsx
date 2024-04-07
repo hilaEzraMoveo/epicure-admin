@@ -4,6 +4,7 @@ import { DishColumns } from "@/data/tableColumns.data";
 import { useEffect, useState } from "react";
 import { getDishes } from "@/services/dish.service";
 import { IDish } from "@/models/dish.model";
+import { HttpClientService } from "@/services/HttpClient.service";
 
 const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
   return (
@@ -18,7 +19,9 @@ export default Dishes;
 
 export async function getServerSideProps() {
   try {
-    const fetchedDishes = await getDishes();
+    //const fetchedDishes = await getDishes();
+    const response = await HttpClientService.get<IDish[]>("/dishes");
+    const fetchedDishes = response.data;
     return {
       props: {
         dishesData: fetchedDishes,

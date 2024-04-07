@@ -121,6 +121,11 @@ export const DishColumns: any[] = [
     cell: (element: IDish) => element.restaurant.title,
   },
   {
+    columnDef: "status",
+    header: "Status",
+    cell: (element: IDish) => element.status,
+  },
+  {
     columnDef: "actions",
     header: "Actions",
   },

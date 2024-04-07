@@ -4,6 +4,7 @@ import GeneralTable from "../shared/components/GeneralTable/GeneralTable";
 import { chefColumns } from "../data/tableColumns.data";
 import { getChefs } from "@/services/chef.service";
 import { IChef } from "@/models/chef.model";
+import { HttpClientService } from "@/services/HttpClient.service";
 
 const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
   return (
@@ -18,7 +19,9 @@ export default Chefs;
 
 export async function getServerSideProps() {
   try {
-    const fetchedChefs = await getChefs();
+    // const fetchedChefs = await getChefs();
+    const response = await HttpClientService.get<IChef[]>("/chefs");
+    const fetchedChefs = response.data;
     return {
       props: {
         chefsData: fetchedChefs,
