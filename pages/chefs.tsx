@@ -1,12 +1,29 @@
 import Sidebar from "@/shared/components/Sidebar/Sidebar";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import GeneralTable from "../shared/components/GeneralTable/GeneralTable";
+import { chefColumns } from "../data/tableColumns.data"; // Import your columns array
+import { getChefs } from "@/services/chef.servise";
+import { IChef } from "@/models/chef.model";
 
 const chefs = () => {
+  const [chefs, setChefs] = useState<IChef[]>([]);
+
+  useEffect(() => {
+    fetchChefsData();
+  }, []);
+
+  const fetchChefsData = async () => {
+    try {
+      const fetchedChefs = await getChefs();
+      setChefs(fetchedChefs);
+    } catch (error) {
+      console.error("Error fetching chefs:", error);
+    }
+  };
   return (
     <div className="container">
-      {/* <Table type="chefs"></Table> */}
       <Sidebar></Sidebar>
-      <h1>hello hila</h1>
+      <GeneralTable data={chefs} columns={chefColumns} />
     </div>
   );
 };
