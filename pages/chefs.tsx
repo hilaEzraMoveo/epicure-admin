@@ -2,7 +2,7 @@ import Sidebar from "@/shared/components/Sidebar/Sidebar";
 import React, { useEffect, useState } from "react";
 import GeneralTable from "../shared/components/GeneralTable/GeneralTable";
 import { chefColumns } from "../data/tableColumns.data";
-import { getChefs } from "@/services/chef.servise";
+import { getChefs } from "@/services/chef.service";
 import { IChef } from "@/models/chef.model";
 
 const chefs = () => {
