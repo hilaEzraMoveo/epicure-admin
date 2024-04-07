@@ -113,7 +113,7 @@ export const DishColumns: any[] = [
   {
     columnDef: "price",
     header: "Price",
-    cell: (element: IDish) => element.price.toString() + "",
+    cell: (element: IDish) => element.price.toString() + "₪",
   },
   {
     columnDef: "restaurant",
