@@ -3,8 +3,7 @@ import styles from "./GeneralTable.module.css";
 import ActionButton from "../ActionButton/ActionButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-
+import resources, { Status } from "@/resources/resources";
 interface Column {
   columnDef: string;
   header: string;
@@ -22,16 +21,16 @@ const GeneralTable: React.FC<Props> = ({ data, columns, onEdit, onDelete }) => {
   const renderActionsColumn = (row: any) => {
     return (
       <td>
-        {row.status === "active" && onEdit && (
+        {row.status === Status.ACTIVE && onEdit && (
           <ActionButton
-            label="Edit"
+            label={resources.edit}
             icon={<EditIcon />}
             onClick={() => onEdit(row)}
           />
         )}
-        {row.status === "active" && onDelete && (
+        {row.status === Status.ACTIVE && onDelete && (
           <ActionButton
-            label="Delete"
+            label={resources.delete}
             icon={<DeleteIcon />}
             onClick={() => onDelete(row)}
           />
