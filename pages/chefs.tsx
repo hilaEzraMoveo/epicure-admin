@@ -6,6 +6,7 @@ import { IChef } from "@/models/chef.model";
 import { HttpClientService } from "@/services/HttpClient.service";
 import ActionButton from "@/shared/components/ActionButton/ActionButton";
 import AddIcon from "@mui/icons-material/Add";
+import resources from "@/resources/resources";
 
 const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
   function handleCreateNew(): void {
@@ -13,7 +14,7 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
   }
 
   const handleEdit = (rowData: IChef) => {
-    console.log("Editing chef:", rowData);
+    // TODO :  create a edit func
   };
 
   const handleDelete = async (rowData: IChef) => {
@@ -22,11 +23,6 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
         `/chefs/${rowData._id}`,
         null
       );
-      if (response.status === 200) {
-        console.log("Chef deleted successfully:", rowData);
-      } else {
-        console.error("Failed to delete chef:", rowData);
-      }
     } catch (error) {
       console.error("Error deleting chef:", error);
     }
@@ -39,7 +35,7 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
       </div>
       <div>
         <ActionButton
-          label="Create New"
+          label={resources.createNew}
           onClick={handleCreateNew}
           icon={<AddIcon />}
         />

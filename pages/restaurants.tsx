@@ -5,15 +5,14 @@ import { IRestaurant } from "@/models/restaurant.model";
 import { HttpClientService } from "@/services/HttpClient.service";
 import ActionButton from "@/shared/components/ActionButton/ActionButton";
 import AddIcon from "@mui/icons-material/Add";
+import resources from "@/resources/resources";
 
 const Restaurants = ({
   restaurantsData,
 }: {
   restaurantsData: IRestaurant[];
 }) => {
-  const handleEdit = (rowData: IRestaurant) => {
-    console.log("Editing restaurant:", rowData);
-  };
+  const handleEdit = (rowData: IRestaurant) => {};
 
   const handleDelete = async (rowData: IRestaurant) => {
     try {
@@ -21,11 +20,6 @@ const Restaurants = ({
         `/restaurants/${rowData._id}`,
         null
       );
-      if (response.status === 200) {
-        console.log("Restaurant deleted successfully:", rowData);
-      } else {
-        console.error("Failed to delete Restaurant:", rowData);
-      }
     } catch (error) {
       console.error("Error deleting Restaurant:", error);
     }
@@ -42,7 +36,7 @@ const Restaurants = ({
       </div>
       <div>
         <ActionButton
-          label="Create New"
+          label={resources.createNew}
           onClick={handleCreateNew}
           icon={<AddIcon />}
         />

@@ -5,11 +5,9 @@ import { IDish } from "@/models/dish.model";
 import { HttpClientService } from "@/services/HttpClient.service";
 import ActionButton from "@/shared/components/ActionButton/ActionButton";
 import AddIcon from "@mui/icons-material/Add";
-
+import resources from "@/resources/resources";
 const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
-  const handleEdit = (rowData: IDish) => {
-    console.log("Editing dish:", rowData);
-  };
+  const handleEdit = (rowData: IDish) => {};
 
   const handleDelete = async (rowData: IDish) => {
     try {
@@ -17,11 +15,6 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
         `/dishes/${rowData._id}`,
         null
       );
-      if (response.status === 200) {
-        console.log("Dish deleted successfully:", rowData);
-      } else {
-        console.error("Failed to delete dish:", rowData);
-      }
     } catch (error) {
       console.error("Error deleting dish:", error);
     }
@@ -38,7 +31,7 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
       </div>
       <div>
         <ActionButton
-          label="Create New"
+          label={resources.createNew}
           onClick={handleCreateNew}
           icon={<AddIcon />}
         />
