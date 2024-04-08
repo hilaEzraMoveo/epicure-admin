@@ -1,5 +1,9 @@
 import React from "react";
 import styles from "./GeneralTable.module.css";
+import ActionButton from "../ActionButton/ActionButton";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 
 interface Column {
   columnDef: string;
@@ -10,9 +14,32 @@ interface Column {
 interface Props {
   data: any[];
   columns: Column[];
+  onEdit?: (rowData: any) => void;
+  onDelete?: (rowData: any) => void;
 }
 
-const GeneralTable: React.FC<Props> = ({ data, columns }) => {
+const GeneralTable: React.FC<Props> = ({ data, columns, onEdit, onDelete }) => {
+  const renderActionsColumn = (row: any) => {
+    return (
+      <td>
+        {row.status === "active" && onEdit && (
+          <ActionButton
+            label="Edit"
+            icon={<EditIcon />}
+            onClick={() => onEdit(row)}
+          />
+        )}
+        {row.status === "active" && onDelete && (
+          <ActionButton
+            label="Delete"
+            icon={<DeleteIcon />}
+            onClick={() => onDelete(row)}
+          />
+        )}
+      </td>
+    );
+  };
+
   return (
     <div className={styles["table-container"]}>
       <table className={styles.table}>
@@ -21,6 +48,7 @@ const GeneralTable: React.FC<Props> = ({ data, columns }) => {
             {columns.map((column) => (
               <th key={column.columnDef}>{column.header}</th>
             ))}
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -41,6 +69,7 @@ const GeneralTable: React.FC<Props> = ({ data, columns }) => {
                   );
                 }
               })}
+              {renderActionsColumn(row)}
             </tr>
           ))}
         </tbody>

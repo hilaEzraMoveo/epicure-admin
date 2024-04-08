@@ -35,10 +35,6 @@ export const chefColumns: any[] = [
     header: "Status",
     cell: (element: IChef) => element.status,
   },
-  {
-    columnDef: "actions",
-    header: "Actions",
-  },
 ];
 
 export const RestaurantColumns: any[] = [
@@ -83,10 +79,6 @@ export const RestaurantColumns: any[] = [
     header: "Status",
     cell: (element: IChef) => element.status,
   },
-  {
-    columnDef: "actions",
-    header: "Actions",
-  },
 ];
 
 export const DishColumns: any[] = [
@@ -124,9 +116,5 @@ export const DishColumns: any[] = [
     columnDef: "status",
     header: "Status",
     cell: (element: IDish) => element.status,
-  },
-  {
-    columnDef: "actions",
-    header: "Actions",
   },
 ];
