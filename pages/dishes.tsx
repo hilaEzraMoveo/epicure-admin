@@ -1,4 +1,5 @@
 import Sidebar from "@/shared/components/Sidebar/Sidebar";
+import React, { useState } from "react";
 import GeneralTable from "../shared/components/GeneralTable/GeneralTable";
 import { DishColumns } from "@/data/tableColumns.data";
 import { IDish } from "@/models/dish.model";
@@ -6,8 +7,26 @@ import { HttpClientService } from "@/services/HttpClient.service";
 import ActionButton from "@/shared/components/ActionButton/ActionButton";
 import AddIcon from "@mui/icons-material/Add";
 import resources from "@/resources/resources";
+import GenericDialog from "@/shared/components/GenericDialog/GenericDialog";
+import { DishProps } from "@/data/editAndCreateProps.data";
+
 const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
-  const handleEdit = (rowData: IDish) => {};
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedDish, setSelectedDish] = useState<IDish | null>(null);
+
+  const handleCreateNew = () => {
+    setSelectedDish(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  const handleEdit = (rowData: IDish) => {
+    setSelectedDish(rowData);
+    setIsDialogOpen(true);
+  };
 
   const handleDelete = async (rowData: IDish) => {
     try {
@@ -20,9 +39,33 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
     }
   };
 
-  function handleCreateNew(): void {
-    throw new Error("Function not implemented.");
-  }
+  const handleCreateOrUpdateDish = async (newDishData: IDish) => {
+    try {
+      console.log(newDishData);
+      // If editing an existing chef (newChefData contains _id)
+      if (newDishData._id) {
+        const response = await HttpClientService.put(
+          `/dishes/${newDishData._id}`,
+          {
+            updatedChefData: newDishData,
+          }
+        );
+        console.log("response:", response.data);
+      } else {
+        console.log("creating new dish");
+        const response = await HttpClientService.post(`/dishes`, {
+          title: newDishData.title,
+          image: newDishData.image,
+          ingredients: newDishData.ingredients,
+          restaurants: [],
+          status: newDishData.status,
+        });
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error("Error updating chef:", error);
+    }
+  };
 
   return (
     <div className="container">
@@ -40,6 +83,14 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
           columns={DishColumns}
           onEdit={handleEdit}
           onDelete={handleDelete}
+        />
+        <GenericDialog
+          open={isDialogOpen}
+          allData={dishesData}
+          data={selectedDish}
+          props={DishProps}
+          onClose={handleCloseDialog}
+          onSubmit={handleCreateOrUpdateDish}
         />
       </div>
     </div>
