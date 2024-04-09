@@ -67,7 +67,7 @@ export const RestaurantColumns: any[] = [
   {
     columnDef: "signatureDish",
     header: "Signature Dish",
-    cell: (element: IRestaurant) => element.signatureDish.title,
+    cell: (element: IRestaurant) => element.signatureDish?.title,
   },
   {
     columnDef: "isPopular",

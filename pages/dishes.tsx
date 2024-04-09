@@ -41,29 +41,32 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
 
   const handleCreateOrUpdateDish = async (newDishData: IDish) => {
     try {
-      console.log(newDishData);
-      // If editing an existing chef (newChefData contains _id)
       if (newDishData._id) {
+        // edit operation
+        console.log(newDishData);
         const response = await HttpClientService.put(
           `/dishes/${newDishData._id}`,
           {
-            updatedChefData: newDishData,
+            updatedDishData: newDishData,
           }
         );
-        console.log("response:", response.data);
+        console.log("Response:", response.data);
       } else {
-        console.log("creating new dish");
+        // create operation
+        console.log("Creating new dish");
         const response = await HttpClientService.post(`/dishes`, {
           title: newDishData.title,
           image: newDishData.image,
           ingredients: newDishData.ingredients,
-          restaurants: [],
+          tags: newDishData.tags,
+          price: newDishData.price,
+          restaurant: newDishData.restaurant,
           status: newDishData.status,
         });
         console.log(response.data);
       }
     } catch (error) {
-      console.error("Error updating chef:", error);
+      console.error("Error updating dish:", error);
     }
   };
 

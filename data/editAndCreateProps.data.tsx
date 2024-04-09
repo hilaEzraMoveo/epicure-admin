@@ -98,6 +98,11 @@ export const DishProps: any[] = [
     cell: (element: IDish) => element.price?.toString(),
   },
   {
+    columnDef: "restaurant",
+    header: "Restaurant",
+    cell: (element: IDish) => element.restaurant?.title,
+  },
+  {
     columnDef: "status",
     header: "Status",
     cell: (element: IDish) => element.status,
