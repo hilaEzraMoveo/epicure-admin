@@ -60,12 +60,12 @@ const Restaurants = ({
     newRestaurantData: IRestaurant
   ) => {
     try {
-      let response;
+      //let response;
       // create operation
       if (!selectedRestaurant) {
         console.log(newRestaurantData);
 
-        response = await HttpClientService.post("/restaurants", {
+        const response = await HttpClientService.post("/restaurants", {
           title: newRestaurantData.title,
           image: newRestaurantData.image,
           chef: newRestaurantData.chef,
@@ -75,14 +75,32 @@ const Restaurants = ({
           isPopular: newRestaurantData.isPopular,
           status: newRestaurantData.status,
         });
+
+        if (response.data) {
+          setRestaurantsToDisplay((prevData: IRestaurant[]) => {
+            const newData = response.data as IRestaurant;
+            return [...prevData, newData];
+          });
+          // setRestaurantsToDisplay([
+          //   ...restaurantsToDisplay,
+          //   response.data as IRestaurant,
+          // ]);
+        }
+        console.log("Restaurant created:", response.data);
       } else {
         // update operation
-        response = await HttpClientService.put(
+        const response = await HttpClientService.put(
           `/restaurants/${selectedRestaurant._id}`,
           newRestaurantData
         );
+        const updatedData = restaurantsToDisplay.map((restaurant) =>
+          restaurant._id === newRestaurantData._id
+            ? (response.data as IRestaurant)
+            : restaurant
+        );
+        setRestaurantsToDisplay(updatedData);
+        console.log("Restaurant updated:", response.data);
       }
-      console.log("Restaurant created/updated:", response.data);
     } catch (error) {
       console.error("Error creating/updating restaurant:", error);
     }
@@ -115,7 +133,7 @@ const Restaurants = ({
       <div>
         <Sidebar />
       </div>
-      <div>
+      <div style={{ overflowY: "scroll", width: "100%" }}>
         <ActionButton
           label={resources.createNew}
           onClick={handleCreateNew}

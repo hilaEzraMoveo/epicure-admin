@@ -141,30 +141,6 @@ const GenericDialog: React.FC<Props> = ({
     ));
   };
 
-  //   const handleTagToggle = (tag: string) => {
-  //     let updatedTags: string[];
-
-  //     // Check if the tag is already present in the tags array
-  //     const tagIndex = formData.tags?.indexOf(tag);
-  //     if (tagIndex === -1) {
-  //       // If not present, add the tag to the tags array
-  //       updatedTags = [...formData.tags, tag];
-  //     } else {
-  //       // If present, remove the tag from the tags array
-  //       updatedTags = [
-  //         ...(formData.tags?.slice(0, tagIndex) ?? []),
-  //         ...(formData.tags?.slice(tagIndex + 1) ?? []),
-  //       ];
-  //     }
-
-  //     // Update the form data with the updated tags array
-  //     setFormData({
-  //       ...formData,
-  //       tags: updatedTags,
-  //     });
-
-  //     console.log(formData.tags);
-  //   };
   const handleTagToggle = (tag: string) => {
     const updatedTags = formData?.tags?.includes(tag)
       ? formData.tags.filter((item: string) => item !== tag)

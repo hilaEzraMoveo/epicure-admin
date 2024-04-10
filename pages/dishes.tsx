@@ -1,5 +1,5 @@
 import Sidebar from "@/shared/components/Sidebar/Sidebar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GeneralTable from "../shared/components/GeneralTable/GeneralTable";
 import { DishColumns } from "@/data/tableColumns.data";
 import { IDish } from "@/models/dish.model";
@@ -13,6 +13,12 @@ import { DishProps } from "@/data/editAndCreateProps.data";
 const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDish, setSelectedDish] = useState<IDish | null>(null);
+  const [updatedDishesData, setUpdatedDishesData] =
+    useState<IDish[]>(dishesData);
+
+  useEffect(() => {
+    setUpdatedDishesData(dishesData);
+  }, [dishesData]);
 
   const handleCreateNew = () => {
     setSelectedDish(null);
@@ -51,6 +57,10 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
           }
         );
         console.log("Response:", response.data);
+        const updatedData = updatedDishesData.map((dish) =>
+          dish._id === newDishData._id ? (response.data as IDish) : dish
+        );
+        setUpdatedDishesData(updatedData);
       } else {
         // create operation
         console.log("Creating new dish");
@@ -64,6 +74,14 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
           status: newDishData.status,
         });
         console.log(response.data);
+
+        if (response.data) {
+          // Add the new dish object to the updatedDishesData state
+          setUpdatedDishesData((prevData: IDish[]) => {
+            const newData = response.data as IDish;
+            return [...prevData, newData];
+          });
+        }
       }
     } catch (error) {
       console.error("Error updating dish:", error);
@@ -75,21 +93,21 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
       <div>
         <Sidebar />
       </div>
-      <div>
+      <div style={{ overflowY: "scroll", width: "100%" }}>
         <ActionButton
           label={resources.createNew}
           onClick={handleCreateNew}
           icon={<AddIcon />}
         />
         <GeneralTable
-          data={dishesData}
+          data={updatedDishesData} //change
           columns={DishColumns}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
         <GenericDialog
           open={isDialogOpen}
-          allData={dishesData}
+          allData={updatedDishesData} //change
           data={selectedDish}
           props={DishProps}
           onClose={handleCloseDialog}

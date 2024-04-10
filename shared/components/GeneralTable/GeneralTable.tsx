@@ -92,6 +92,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import resources, { Status } from "@/resources/resources";
+import { TableContainer } from "./GeneralTable.style";
 
 interface Column {
   columnDef: string;
@@ -133,7 +134,7 @@ const GeneralTable: React.FC<Props> = ({ data, columns, onEdit, onDelete }) => {
 
   return (
     <div>
-      <Table>
+      <TableContainer>
         <TableHead>
           <TableRow>
             {columns.map((column) => (
@@ -164,7 +165,7 @@ const GeneralTable: React.FC<Props> = ({ data, columns, onEdit, onDelete }) => {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </TableContainer>
     </div>
   );
 };

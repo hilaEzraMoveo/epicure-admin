@@ -1,5 +1,5 @@
 import Sidebar from "@/shared/components/Sidebar/Sidebar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GeneralTable from "../shared/components/GeneralTable/GeneralTable";
 import { chefColumns } from "../data/tableColumns.data";
 import { IChef } from "@/models/chef.model";
@@ -13,6 +13,11 @@ import { chefProps } from "@/data/editAndCreateProps.data";
 const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedChef, setSelectedChef] = useState<IChef | null>(null);
+  const [updateChefsData, setUpdatedChefsData] = useState<IChef[]>(chefsData);
+
+  useEffect(() => {
+    setUpdatedChefsData(chefsData);
+  }, [chefsData]);
 
   const handleCreateNew = () => {
     setSelectedChef(null);
@@ -51,6 +56,10 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
           }
         );
         console.log("response:", response.data);
+        const updatedData = updateChefsData.map((chef) =>
+          chef._id === newChefData._id ? newChefData : chef
+        );
+        setUpdatedChefsData(updatedData);
       } else {
         //create operation
         console.log("creating new chef");
@@ -63,6 +72,13 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
           status: newChefData.status,
         });
         console.log(response.data);
+        if (response.data) {
+          // Add the new dish object to the updatedDishesData state
+          setUpdatedChefsData((prevData: IChef[]) => {
+            const newData = response.data as IChef;
+            return [...prevData, newData];
+          });
+        }
       }
     } catch (error) {
       console.error("Error updating chef:", error);
@@ -74,21 +90,21 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
       <div>
         <Sidebar />
       </div>
-      <div>
+      <div style={{ overflowY: "scroll", width: "100%" }}>
         <ActionButton
           label={resources.createNew}
           onClick={handleCreateNew}
           icon={<AddIcon />}
         />
         <GeneralTable
-          data={chefsData}
+          data={updateChefsData}
           columns={chefColumns}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
         <GenericDialog
           open={isDialogOpen}
-          allData={chefsData}
+          allData={updateChefsData}
           data={selectedChef}
           props={chefProps}
           onClose={handleCloseDialog}
