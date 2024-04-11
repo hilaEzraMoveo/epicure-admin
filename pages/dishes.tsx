@@ -27,6 +27,7 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
+    setSelectedDish(null);
   };
 
   const handleEdit = (rowData: IDish) => {
@@ -40,6 +41,10 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
         `/dishes/${rowData._id}`,
         null
       );
+      const updatedData = updatedDishesData.map((dish) =>
+        dish._id === rowData._id ? (response.data as IDish) : dish
+      );
+      setUpdatedDishesData(updatedData);
     } catch (error) {
       console.error("Error deleting dish:", error);
     }
@@ -93,21 +98,21 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
       <div>
         <Sidebar />
       </div>
-      <div style={{ overflowY: "scroll", width: "100%" }}>
+      <div className="table-container">
         <ActionButton
           label={resources.createNew}
           onClick={handleCreateNew}
           icon={<AddIcon />}
         />
         <GeneralTable
-          data={updatedDishesData} //change
+          data={updatedDishesData}
           columns={DishColumns}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
         <GenericDialog
           open={isDialogOpen}
-          allData={updatedDishesData} //change
+          allData={updatedDishesData}
           data={selectedDish}
           props={DishProps}
           onClose={handleCloseDialog}
@@ -122,7 +127,6 @@ export default Dishes;
 
 export async function getServerSideProps() {
   try {
-    //const fetchedDishes = await getDishes();
     const response = await HttpClientService.get<IDish[]>("/dishes");
     const fetchedDishes = response.data;
     return {

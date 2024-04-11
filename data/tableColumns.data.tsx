@@ -26,7 +26,7 @@ export const chefColumns: any[] = [
   },
   {
     columnDef: "isChefOfTheWeek",
-    header: "Is Chef Of The Week",
+    header: "Chef Of The Week",
     cell: (element: IChef) => (element.isChefOfTheWeek ? "Yes" : "No"),
   },
   ,

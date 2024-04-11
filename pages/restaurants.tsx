@@ -38,6 +38,7 @@ const Restaurants = ({
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
+    setSelectedRestaurant(null);
   };
 
   const handleEdit = (rowData: IRestaurant) => {
@@ -51,6 +52,12 @@ const Restaurants = ({
         `/restaurants/${rowData._id}`,
         null
       );
+      const updatedData = restaurantsToDisplay.map((restaurant) =>
+        restaurant._id === rowData._id
+          ? (response.data as IRestaurant)
+          : restaurant
+      );
+      setRestaurantsToDisplay(updatedData);
     } catch (error) {
       console.error("Error deleting restaurant:", error);
     }
@@ -60,7 +67,6 @@ const Restaurants = ({
     newRestaurantData: IRestaurant
   ) => {
     try {
-      //let response;
       // create operation
       if (!selectedRestaurant) {
         console.log(newRestaurantData);
@@ -81,10 +87,6 @@ const Restaurants = ({
             const newData = response.data as IRestaurant;
             return [...prevData, newData];
           });
-          // setRestaurantsToDisplay([
-          //   ...restaurantsToDisplay,
-          //   response.data as IRestaurant,
-          // ]);
         }
         console.log("Restaurant created:", response.data);
       } else {
@@ -133,7 +135,7 @@ const Restaurants = ({
       <div>
         <Sidebar />
       </div>
-      <div style={{ overflowY: "scroll", width: "100%" }}>
+      <div className="table-container">
         <ActionButton
           label={resources.createNew}
           onClick={handleCreateNew}
@@ -146,7 +148,9 @@ const Restaurants = ({
           onDelete={handleDelete}
         />
         {restaurantsData.length < 9 && (
-          <button onClick={handleLoadMore}>Load More</button>
+          <button className="load-more-button" onClick={handleLoadMore}>
+            Load More
+          </button>
         )}
         <GenericDialog
           open={isDialogOpen}

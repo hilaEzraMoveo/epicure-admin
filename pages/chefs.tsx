@@ -26,6 +26,7 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
+    setSelectedChef(null);
   };
 
   const handleEdit = (rowData: IChef) => {
@@ -90,7 +91,7 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
       <div>
         <Sidebar />
       </div>
-      <div style={{ overflowY: "scroll", width: "100%" }}>
+      <div className="table-container">
         <ActionButton
           label={resources.createNew}
           onClick={handleCreateNew}
@@ -119,7 +120,6 @@ export default Chefs;
 
 export async function getServerSideProps() {
   try {
-    // const fetchedChefs = await getChefs();
     const response = await HttpClientService.get<IChef[]>("/chefs");
     const fetchedChefs = response.data;
     return {

@@ -1,12 +1,15 @@
 .sidebar {
   margin-left: 20px;
-  height: 100%;
+  margin-top: 30px;
+  height: 280px;
   width: 250px;
   padding: 20px;
   font-family: Arial, sans-serif;
   overflow-y: auto;
-  border-right: 1px solid #fff;
+  border: 2px solid #fff;
   border-color: gray;
+  border-radius: 5px;
+  background-color: white;
 }
 
 .sidebar h1 {

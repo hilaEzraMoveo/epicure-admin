@@ -1,3 +1,6 @@
+//import assign from "lodash-es/assign";
+import assign from "lodash.assign";
+
 import React, { useState, useEffect, ChangeEvent } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -11,6 +14,7 @@ import { IChef } from "@/models/chef.model";
 import { IDish } from "@/models/dish.model";
 import { IRestaurant } from "@/models/restaurant.model";
 import { HttpClientService } from "@/services/HttpClient.service";
+import { ImageUploader } from "cloudinary-react";
 
 interface Column {
   columnDef: string;
@@ -38,6 +42,7 @@ const GenericDialog: React.FC<Props> = ({
   const [formData, setFormData] = useState<any>({});
   const [newIngredient, setNewIngredient] = useState("");
   const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
+  const [allChefs, setAllChefs] = useState<IChef[]>([]);
 
   useEffect(() => {
     setFormData(data);
@@ -46,6 +51,7 @@ const GenericDialog: React.FC<Props> = ({
   useEffect(() => {
     if (open) {
       fetchRestaurants();
+      fetchChefs();
     }
   }, [open]);
 
@@ -58,6 +64,16 @@ const GenericDialog: React.FC<Props> = ({
       setRestaurants(restaurantsData);
     } catch (error) {
       console.error("Error fetching restaurants:", error);
+    }
+  };
+
+  const fetchChefs = async () => {
+    try {
+      const response = await HttpClientService.get<IChef[]>("/chefs");
+      const fetchChefs = response.data;
+      setAllChefs(fetchChefs);
+    } catch (error) {
+      console.error("Error fetching chefs:", error);
     }
   };
 
@@ -80,7 +96,6 @@ const GenericDialog: React.FC<Props> = ({
   };
 
   const renderIngredientsMenu = () => {
-    // Assuming ingredients are stored in the data object under the key "ingredients"
     const ingredients: string[] = formData?.ingredients || [];
 
     return ingredients.map((ingredient: string) => (
@@ -119,8 +134,6 @@ const GenericDialog: React.FC<Props> = ({
       });
       setNewIngredient("");
     }
-
-    console.log(formData?.ingredients);
   };
 
   const renderTagsMenu = () => {
@@ -146,19 +159,15 @@ const GenericDialog: React.FC<Props> = ({
       ? formData.tags.filter((item: string) => item !== tag)
       : [...(formData.tags ?? []), tag];
 
-    // Update the form data with the updated tags array
     setFormData({
       ...formData,
       tags: updatedTags,
     });
-
-    console.log(updatedTags); // Log the updated tags array instead of formData.tags
   };
 
   const handleTagClick = (tag: string) => {
     let updatedTags: string[];
 
-    // Toggle logic for the tag
     if (formData.tags?.includes(tag)) {
       updatedTags = formData.tags.filter((item: string) => item !== tag);
     } else {
@@ -169,6 +178,13 @@ const GenericDialog: React.FC<Props> = ({
       ...formData,
       tags: updatedTags,
     });
+  };
+
+  const handleImageUpload = (info: any) => {
+    if (info.event === "success") {
+      const imageUrl = info.info.secure_url;
+      setFormData({ ...formData, imageUrl });
+    }
   };
 
   return (
@@ -191,7 +207,23 @@ const GenericDialog: React.FC<Props> = ({
                 <MenuItem value="deleted">Deleted</MenuItem>
               </TextField>
             );
-          } else if (
+          }
+          // else if (prop.columnDef === "image") {
+          //   return (
+          //     <ImageUploader
+          //       cloudName="dv08nbdyh"
+          //       uploadPreset="nmbcn6cc"
+          //       onStart={() => console.log("Upload started")}
+          //       onSuccess={handleImageUpload}
+          //       onError={(error: any) =>
+          //         console.error("Error uploading image:", error)
+          //       }
+          //       buttonText="Upload Image"
+          //       buttonClass="btn btn-primary"
+          //     />
+          //   );
+          // }
+          else if (
             prop.columnDef === "isChefOfTheWeek" ||
             prop.columnDef === "isPopular"
           ) {
@@ -230,11 +262,6 @@ const GenericDialog: React.FC<Props> = ({
               </TextField>
             );
           } else if (prop.columnDef === "chef") {
-            const allChefs: IChef[] = [];
-            allData.forEach((restaurant) => {
-              allChefs.push(restaurant.chef);
-            });
-
             return (
               <TextField
                 key={prop.columnDef}
