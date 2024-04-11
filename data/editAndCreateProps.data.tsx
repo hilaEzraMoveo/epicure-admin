@@ -2,7 +2,7 @@ import { IChef } from "@/models/chef.model";
 import { IRestaurant } from "@/models/restaurant.model";
 import { IDish } from "@/models/dish.model";
 
-export const chefColumns: any[] = [
+export const chefProps: any[] = [
   {
     columnDef: "title",
     header: "Title",
@@ -19,14 +19,8 @@ export const chefColumns: any[] = [
     cell: (element: IChef) => element.description,
   },
   {
-    columnDef: "restaurants",
-    header: "Restaurants",
-    cell: (element: IChef) =>
-      element.restaurants.map((restaurant) => restaurant.title).join(", "),
-  },
-  {
     columnDef: "isChefOfTheWeek",
-    header: "Chef Of The Week",
+    header: "Is Chef Of The Week",
     cell: (element: IChef) => (element.isChefOfTheWeek ? "Yes" : "No"),
   },
   ,
@@ -37,7 +31,7 @@ export const chefColumns: any[] = [
   },
 ];
 
-export const RestaurantColumns: any[] = [
+export const RestaurantProps: any[] = [
   {
     columnDef: "title",
     header: "Title",
@@ -51,18 +45,12 @@ export const RestaurantColumns: any[] = [
   {
     columnDef: "chef",
     header: "Chef",
-    cell: (element: IRestaurant) => element.chef.title,
+    cell: (element: IRestaurant) => element.chef?.title || "",
   },
   {
     columnDef: "rating",
     header: "Rating",
-    cell: (element: IRestaurant) => element.rating.toString(),
-  },
-  {
-    columnDef: "dishes",
-    header: "Dishes",
-    cell: (element: IRestaurant) =>
-      element.dishes.map((dish) => dish.title).join(", "),
+    cell: (element: IRestaurant) => element.rating?.toString() || "",
   },
   {
     columnDef: "signatureDish",
@@ -77,11 +65,11 @@ export const RestaurantColumns: any[] = [
   {
     columnDef: "status",
     header: "Status",
-    cell: (element: IChef) => element.status,
+    cell: (element: IRestaurant) => element.status,
   },
 ];
 
-export const DishColumns: any[] = [
+export const DishProps: any[] = [
   {
     columnDef: "title",
     header: "Title",
@@ -95,22 +83,24 @@ export const DishColumns: any[] = [
   {
     columnDef: "ingredients",
     header: "Ingredients",
-    cell: (element: IDish) => element.ingredients.join(", "),
+    cell: (element: IDish) =>
+      Array.isArray(element.ingredients) ? element.ingredients.join(", ") : "",
   },
   {
     columnDef: "tags",
     header: "Tags",
-    cell: (element: IDish) => element.tags.join(", "),
+    cell: (element: IDish) =>
+      Array.isArray(element.tags) ? element.tags.join(", ") : "",
   },
   {
     columnDef: "price",
     header: "Price",
-    cell: (element: IDish) => element.price.toString() + "₪",
+    cell: (element: IDish) => element.price?.toString(),
   },
   {
     columnDef: "restaurant",
     header: "Restaurant",
-    cell: (element: IDish) => element.restaurant.title,
+    cell: (element: IDish) => element.restaurant?.title,
   },
   {
     columnDef: "status",
