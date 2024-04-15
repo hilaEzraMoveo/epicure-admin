@@ -51,7 +51,7 @@ export const RestaurantColumns: any[] = [
   {
     columnDef: "chef",
     header: "Chef",
-    cell: (element: IRestaurant) => element.chef.title,
+    cell: (element: IRestaurant) => element.chef?.title,
   },
   {
     columnDef: "rating",
