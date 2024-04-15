@@ -50,6 +50,24 @@ const GlobalStyle = createGlobalStyle`
     margin-left: 45%;
     cursor: pointer
   }
+
+  .formContainer {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh;
+
+  }
+  .form {
+    background-color: white;
+    width: 100%;
+    maxWidth: 360;
+    border: 2px solid #fff;
+    border-color: gray;
+    border-radius: 5px;
+  }
+
   // .main-content {
   //   flex: 1;
   // }

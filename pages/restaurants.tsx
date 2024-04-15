@@ -9,6 +9,7 @@ import AddIcon from "@mui/icons-material/Add";
 import resources from "@/resources/resources";
 import GenericDialog from "@/shared/components/GenericDialog/GenericDialog";
 import { RestaurantProps } from "@/data/editAndCreateProps.data";
+import ProtectedRoute from "@/shared/components/ProtectedRoute/ProtectedRoute";
 
 const Restaurants = ({
   restaurantsData,
@@ -131,37 +132,39 @@ const Restaurants = ({
   };
 
   return (
-    <div className="container">
-      <div>
-        <Sidebar />
+    <ProtectedRoute>
+      <div className="container">
+        <div>
+          <Sidebar />
+        </div>
+        <div className="table-container">
+          <ActionButton
+            label={resources.createNew}
+            onClick={handleCreateNew}
+            icon={<AddIcon />}
+          />
+          <GeneralTable
+            data={restaurantsToDisplay}
+            columns={RestaurantColumns}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+          {restaurantsData.length < 9 && (
+            <button className="load-more-button" onClick={handleLoadMore}>
+              Load More
+            </button>
+          )}
+          <GenericDialog
+            open={isDialogOpen}
+            allData={restaurantsData}
+            data={selectedRestaurant}
+            props={RestaurantProps}
+            onClose={handleCloseDialog}
+            onSubmit={handleCreateOrUpdateRestaurant}
+          />
+        </div>
       </div>
-      <div className="table-container">
-        <ActionButton
-          label={resources.createNew}
-          onClick={handleCreateNew}
-          icon={<AddIcon />}
-        />
-        <GeneralTable
-          data={restaurantsToDisplay}
-          columns={RestaurantColumns}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-        {restaurantsData.length < 9 && (
-          <button className="load-more-button" onClick={handleLoadMore}>
-            Load More
-          </button>
-        )}
-        <GenericDialog
-          open={isDialogOpen}
-          allData={restaurantsData}
-          data={selectedRestaurant}
-          props={RestaurantProps}
-          onClose={handleCloseDialog}
-          onSubmit={handleCreateOrUpdateRestaurant}
-        />
-      </div>
-    </div>
+    </ProtectedRoute>
   );
 };
 

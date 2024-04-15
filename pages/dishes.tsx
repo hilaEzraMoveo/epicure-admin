@@ -9,7 +9,7 @@ import AddIcon from "@mui/icons-material/Add";
 import resources from "@/resources/resources";
 import GenericDialog from "@/shared/components/GenericDialog/GenericDialog";
 import { DishProps } from "@/data/editAndCreateProps.data";
-
+import ProtectedRoute from "@/shared/components/ProtectedRoute/ProtectedRoute";
 const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDish, setSelectedDish] = useState<IDish | null>(null);
@@ -94,32 +94,34 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
   };
 
   return (
-    <div className="container">
-      <div>
-        <Sidebar />
+    <ProtectedRoute>
+      <div className="container">
+        <div>
+          <Sidebar />
+        </div>
+        <div className="table-container">
+          <ActionButton
+            label={resources.createNew}
+            onClick={handleCreateNew}
+            icon={<AddIcon />}
+          />
+          <GeneralTable
+            data={updatedDishesData}
+            columns={DishColumns}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+          <GenericDialog
+            open={isDialogOpen}
+            allData={updatedDishesData}
+            data={selectedDish}
+            props={DishProps}
+            onClose={handleCloseDialog}
+            onSubmit={handleCreateOrUpdateDish}
+          />
+        </div>
       </div>
-      <div className="table-container">
-        <ActionButton
-          label={resources.createNew}
-          onClick={handleCreateNew}
-          icon={<AddIcon />}
-        />
-        <GeneralTable
-          data={updatedDishesData}
-          columns={DishColumns}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-        <GenericDialog
-          open={isDialogOpen}
-          allData={updatedDishesData}
-          data={selectedDish}
-          props={DishProps}
-          onClose={handleCloseDialog}
-          onSubmit={handleCreateOrUpdateDish}
-        />
-      </div>
-    </div>
+    </ProtectedRoute>
   );
 };
 

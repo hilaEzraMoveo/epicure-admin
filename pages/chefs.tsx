@@ -9,6 +9,7 @@ import AddIcon from "@mui/icons-material/Add";
 import resources from "@/resources/resources";
 import GenericDialog from "@/shared/components/GenericDialog/GenericDialog";
 import { chefProps } from "@/data/editAndCreateProps.data";
+import ProtectedRoute from "@/shared/components/ProtectedRoute/ProtectedRoute";
 
 const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -87,32 +88,34 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
   };
 
   return (
-    <div className="container">
-      <div>
-        <Sidebar />
+    <ProtectedRoute>
+      <div className="container">
+        <div>
+          <Sidebar />
+        </div>
+        <div className="table-container">
+          <ActionButton
+            label={resources.createNew}
+            onClick={handleCreateNew}
+            icon={<AddIcon />}
+          />
+          <GeneralTable
+            data={updateChefsData}
+            columns={chefColumns}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+          <GenericDialog
+            open={isDialogOpen}
+            allData={updateChefsData}
+            data={selectedChef}
+            props={chefProps}
+            onClose={handleCloseDialog}
+            onSubmit={handleCreateOrUpdateChef}
+          />
+        </div>
       </div>
-      <div className="table-container">
-        <ActionButton
-          label={resources.createNew}
-          onClick={handleCreateNew}
-          icon={<AddIcon />}
-        />
-        <GeneralTable
-          data={updateChefsData}
-          columns={chefColumns}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-        <GenericDialog
-          open={isDialogOpen}
-          allData={updateChefsData}
-          data={selectedChef}
-          props={chefProps}
-          onClose={handleCloseDialog}
-          onSubmit={handleCreateOrUpdateChef}
-        />
-      </div>
-    </div>
+    </ProtectedRoute>
   );
 };
 
@@ -136,3 +139,28 @@ export async function getServerSideProps() {
     };
   }
 }
+
+// export async function getServerSideProps(context: any) {
+//   try {
+//     const token = context.req.headers.cookie
+//       ?.split("; ")
+//       .find((row: string) => row.startsWith("token="))
+//       .split("=")[1];
+//     const response = await HttpClientService.get<IChef[]>("/chefs", {
+//       headers: { Authorization: `Bearer ${token}` },
+//     });
+//     const fetchedChefs = response.data;
+//     return {
+//       props: {
+//         chefsData: fetchedChefs,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching chefs:", error);
+//     return {
+//       props: {
+//         chefsData: [],
+//       },
+//     };
+//   }
+// }
