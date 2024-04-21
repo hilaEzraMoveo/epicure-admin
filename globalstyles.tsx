@@ -26,7 +26,7 @@ const GlobalStyle = createGlobalStyle`
   .table-container {
     overflow-y: scroll;
     width: 100%;
-    margin: 30px 30px 20px 20px;
+    margin: 30px 30px 70px 20px;
     border: 2px solid #fff;
     border-color: gray;
     border-radius: 5px;
@@ -68,9 +68,28 @@ const GlobalStyle = createGlobalStyle`
     border-radius: 5px;
   }
 
-  // .main-content {
-  //   flex: 1;
-  // }
+  .main-content {
+    text-align: left;
+    padding: 20px;
+  }
+  
+  .main-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .sub-title {
+    font-size: 1.5rem;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  .sub-heading {
+    font-size: 1.2rem;
+    color: #888;
+  }
+
 `;
 
 export default GlobalStyle;

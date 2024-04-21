@@ -5,6 +5,13 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  //basePath: "/admin",
+  exportPathMap: async function (defaultPathMap) {
+    delete defaultPathMap["/chefs"];
+    delete defaultPathMap["/dishes"];
+    delete defaultPathMap["/restaurants"];
+    return defaultPathMap;
+  },
 };
 
 module.exports = nextConfig;

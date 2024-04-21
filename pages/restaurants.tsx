@@ -10,6 +10,8 @@ import resources from "@/resources/resources";
 import GenericDialog from "@/shared/components/GenericDialog/GenericDialog";
 import { RestaurantProps } from "@/data/editAndCreateProps.data";
 import ProtectedRoute from "@/shared/components/ProtectedRoute/ProtectedRoute";
+import LogoutButton from "@/shared/components/LogOutButton/LogOutButton";
+import HomeButton from "@/shared/components/HomeButton/HomeButton";
 
 const Restaurants = ({
   restaurantsData,
@@ -74,13 +76,15 @@ const Restaurants = ({
 
         const response = await HttpClientService.post("/restaurants", {
           title: newRestaurantData.title,
-          image: newRestaurantData.image,
+          image:
+            newRestaurantData.image ||
+            "https://i.ytimg.com/vi/pKDuHeOruug/sddefault.jpg",
           chef: newRestaurantData.chef,
           rating: newRestaurantData.rating,
           dishes: [],
           signatureDish: null,
-          isPopular: newRestaurantData.isPopular,
-          status: newRestaurantData.status,
+          isPopular: newRestaurantData.isPopular || false,
+          status: newRestaurantData.status || "active",
         });
 
         if (response.data) {
@@ -133,6 +137,8 @@ const Restaurants = ({
 
   return (
     <ProtectedRoute>
+      <HomeButton />
+      <LogoutButton />
       <div className="container">
         <div>
           <Sidebar />

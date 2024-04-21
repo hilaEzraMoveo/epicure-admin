@@ -10,6 +10,8 @@ import resources from "@/resources/resources";
 import GenericDialog from "@/shared/components/GenericDialog/GenericDialog";
 import { DishProps } from "@/data/editAndCreateProps.data";
 import ProtectedRoute from "@/shared/components/ProtectedRoute/ProtectedRoute";
+import LogoutButton from "@/shared/components/LogOutButton/LogOutButton";
+import HomeButton from "@/shared/components/HomeButton/HomeButton";
 const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDish, setSelectedDish] = useState<IDish | null>(null);
@@ -70,13 +72,15 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
         // create operation
         console.log("Creating new dish");
         const response = await HttpClientService.post(`/dishes`, {
-          title: newDishData.title,
-          image: newDishData.image,
+          title: newDishData.title || "none",
+          image:
+            newDishData.image ||
+            "https://i.pinimg.com/736x/c0/ec/24/c0ec24e414572fe4ed0f1ed98d0adbc5.jpg",
           ingredients: newDishData.ingredients,
           tags: newDishData.tags,
           price: newDishData.price,
           restaurant: newDishData.restaurant,
-          status: newDishData.status,
+          status: newDishData.status || "active",
         });
         console.log(response.data);
 
@@ -95,6 +99,8 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
 
   return (
     <ProtectedRoute>
+      <HomeButton />
+      <LogoutButton />
       <div className="container">
         <div>
           <Sidebar />

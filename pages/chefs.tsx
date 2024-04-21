@@ -10,6 +10,8 @@ import resources from "@/resources/resources";
 import GenericDialog from "@/shared/components/GenericDialog/GenericDialog";
 import { chefProps } from "@/data/editAndCreateProps.data";
 import ProtectedRoute from "@/shared/components/ProtectedRoute/ProtectedRoute";
+import LogoutButton from "@/shared/components/LogOutButton/LogOutButton";
+import HomeButton from "@/shared/components/HomeButton/HomeButton";
 
 const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -42,6 +44,12 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
         `/chefs/${rowData._id}`,
         null
       );
+
+      //assume - to display the restaurant name after delete- do populate to restaurant in backend.
+      const updatedData = updateChefsData.map((chef) =>
+        chef._id === rowData._id ? (response.data as IChef) : chef
+      );
+      setUpdatedChefsData(updatedData);
     } catch (error) {
       console.error("Error deleting chef:", error);
     }
@@ -66,12 +74,14 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
         //create operation
         console.log("creating new chef");
         const response = await HttpClientService.post(`/chefs`, {
-          title: newChefData.title,
-          image: newChefData.image,
-          description: newChefData.description,
+          title: newChefData.title || "unknown",
+          image:
+            newChefData.image ||
+            "https://cdn4.iconfinder.com/data/icons/people-14/24/Anonymous-2-512.png",
+          description: newChefData.description || "none",
           restaurants: [],
-          isChefOfTheWeek: newChefData.isChefOfTheWeek,
-          status: newChefData.status,
+          isChefOfTheWeek: newChefData.isChefOfTheWeek || false,
+          status: newChefData.status || "active",
         });
         console.log(response.data);
         if (response.data) {
@@ -89,6 +99,8 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
 
   return (
     <ProtectedRoute>
+      <HomeButton />
+      <LogoutButton />
       <div className="container">
         <div>
           <Sidebar />

@@ -22,7 +22,6 @@ const LoginForm = () => {
         password: password,
       });
       sessionStorage.setItem("token", response.data as string);
-      console.log(response.data);
       router.push("/");
     } catch (error) {
       console.log("not valid values");
