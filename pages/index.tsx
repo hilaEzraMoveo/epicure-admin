@@ -9,7 +9,7 @@ export default function Home() {
       <div className="container">
         <Sidebar />
         <div className="main-content">
-          <h1 className="main-title">Welcome to the Admin System</h1>
+          <h1 className="main-title">Welcome to the Admin System v2</h1>
           <h2 className="sub-title">
             Here you can create/edit/delete data of your app.
           </h2>
