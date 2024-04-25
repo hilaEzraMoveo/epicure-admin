@@ -17,9 +17,13 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedChef, setSelectedChef] = useState<IChef | null>(null);
   const [updateChefsData, setUpdatedChefsData] = useState<IChef[]>(chefsData);
+  const [chefOfTheWeek, setChefOfTheWeek] = useState<IChef | null>(null);
 
   useEffect(() => {
     setUpdatedChefsData(chefsData);
+    const chefOfTheWeek = chefsData.find((chef) => chef.isChefOfTheWeek);
+    setChefOfTheWeek(chefOfTheWeek ? chefOfTheWeek : null);
+    console.log("chefOfTheWeek " + chefOfTheWeek?.title);
   }, [chefsData]);
 
   const handleCreateNew = () => {
@@ -40,11 +44,17 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
 
   const handleDelete = async (rowData: IChef) => {
     try {
+      if (chefOfTheWeek?._id === rowData._id) {
+        setChefOfTheWeek(null);
+        console.log("chef of the week after delete: " + chefOfTheWeek);
+      }
       const response = await HttpClientService.delete(
         `/chefs/${rowData._id}`,
         null
       );
 
+      console.log("response: ");
+      console.log(response.data);
       //assume - to display the restaurant name after delete- do populate to restaurant in backend.
       const updatedData = updateChefsData.map((chef) =>
         chef._id === rowData._id ? (response.data as IChef) : chef
@@ -55,45 +65,85 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
     }
   };
 
-  const handleCreateOrUpdateChef = async (newChefData: IChef) => {
+  const handleCreateOrUpdateChef = (newChefData: IChef) => {
     try {
       if (newChefData._id) {
-        // edit operation
-        const response = await HttpClientService.put(
-          `/chefs/${newChefData._id}`,
-          {
-            updatedChefData: newChefData,
-          }
-        );
-        console.log("response:", response.data);
-        const updatedData = updateChefsData.map((chef) =>
-          chef._id === newChefData._id ? newChefData : chef
-        );
-        setUpdatedChefsData(updatedData);
+        editChef(newChefData);
       } else {
-        //create operation
-        console.log("creating new chef");
-        const response = await HttpClientService.post(`/chefs`, {
-          title: newChefData.title || "unknown",
-          image:
-            newChefData.image ||
-            "https://cdn4.iconfinder.com/data/icons/people-14/24/Anonymous-2-512.png",
-          description: newChefData.description || "none",
-          restaurants: [],
-          isChefOfTheWeek: newChefData.isChefOfTheWeek || false,
-          status: newChefData.status || "active",
-        });
-        console.log(response.data);
-        if (response.data) {
-          // Add the new dish object to the updatedDishesData state
-          setUpdatedChefsData((prevData: IChef[]) => {
-            const newData = response.data as IChef;
-            return [...prevData, newData];
-          });
-        }
+        createChef(newChefData);
       }
     } catch (error) {
       console.error("Error updating chef:", error);
+    }
+  };
+
+  const editChef = async (newChefData: IChef) => {
+    if (
+      newChefData.isChefOfTheWeek.toString() === "true" &&
+      chefOfTheWeek !== null &&
+      chefOfTheWeek._id !== newChefData._id
+    ) {
+      alert(
+        "There is already a chef of the week. You cannot set another chef as chef of the week."
+      );
+      return;
+    }
+
+    const response = await HttpClientService.put(`/chefs/${newChefData._id}`, {
+      updatedChefData: newChefData,
+    });
+    console.log("response:", response.data);
+    const updatedData = updateChefsData.map((chef) =>
+      chef._id === newChefData._id ? newChefData : chef
+    );
+    setUpdatedChefsData(updatedData);
+
+    if (
+      newChefData.isChefOfTheWeek.toString() === "false" &&
+      newChefData._id === chefOfTheWeek?._id
+    ) {
+      setChefOfTheWeek(null);
+    }
+
+    if (
+      newChefData.isChefOfTheWeek.toString() === "true" &&
+      chefOfTheWeek === null
+    ) {
+      setChefOfTheWeek(response.data as IChef);
+    }
+  };
+
+  const createChef = async (newChefData: IChef) => {
+    if (
+      newChefData.isChefOfTheWeek.toString() === "true" &&
+      chefOfTheWeek !== null
+    ) {
+      alert(
+        "There is already a chef of the week. You cannot set another chef as chef of the week."
+      );
+      return;
+    }
+
+    const response = await HttpClientService.post(`/chefs`, {
+      title: newChefData.title || "unknown",
+      image:
+        newChefData.image ||
+        "https://cdn4.iconfinder.com/data/icons/people-14/24/Anonymous-2-512.png",
+      description: newChefData.description || "none",
+      restaurants: [],
+      isChefOfTheWeek: newChefData.isChefOfTheWeek || false,
+      status: newChefData.status || "active",
+    });
+    if (response.data) {
+      // Add the new dish object to the updatedDishesData state
+      setUpdatedChefsData((prevData: IChef[]) => {
+        const newData = response.data as IChef;
+        return [...prevData, newData];
+      });
+
+      if (newChefData.isChefOfTheWeek.toString() === "true") {
+        setChefOfTheWeek(response.data as IChef);
+      }
     }
   };
 
@@ -151,28 +201,3 @@ export async function getServerSideProps() {
     };
   }
 }
-
-// export async function getServerSideProps(context: any) {
-//   try {
-//     const token = context.req.headers.cookie
-//       ?.split("; ")
-//       .find((row: string) => row.startsWith("token="))
-//       .split("=")[1];
-//     const response = await HttpClientService.get<IChef[]>("/chefs", {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     const fetchedChefs = response.data;
-//     return {
-//       props: {
-//         chefsData: fetchedChefs,
-//       },
-//     };
-//   } catch (error) {
-//     console.error("Error fetching chefs:", error);
-//     return {
-//       props: {
-//         chefsData: [],
-//       },
-//     };
-//   }
-// }

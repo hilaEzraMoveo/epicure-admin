@@ -111,7 +111,7 @@ const GeneralTable: React.FC<Props> = ({ data, columns, onEdit, onDelete }) => {
   const renderActionsColumn = (row: any) => {
     return (
       <TableCell>
-        {row.status === Status.ACTIVE && onEdit && (
+        {onEdit && (
           <Tooltip title={resources.edit} placement="top">
             <IconButton aria-label={resources.edit} onClick={() => onEdit(row)}>
               <EditIcon />
@@ -152,7 +152,11 @@ const GeneralTable: React.FC<Props> = ({ data, columns, onEdit, onDelete }) => {
                     <img
                       src={row[column.columnDef]}
                       alt="Image"
-                      style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
                     />
                   ) : column.cell ? (
                     column.cell(row)
