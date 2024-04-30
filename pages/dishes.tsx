@@ -12,6 +12,7 @@ import { DishProps } from "@/data/editAndCreateProps.data";
 import ProtectedRoute from "@/shared/components/ProtectedRoute/ProtectedRoute";
 import LogoutButton from "@/shared/components/LogOutButton/LogOutButton";
 import HomeButton from "@/shared/components/HomeButton/HomeButton";
+
 const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDish, setSelectedDish] = useState<IDish | null>(null);
@@ -39,6 +40,11 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
 
   const handleDelete = async (rowData: IDish) => {
     try {
+      const isConfirmed = await confirmDelete();
+
+      if (!isConfirmed) {
+        return;
+      }
       const response = await HttpClientService.delete(
         `/dishes/${rowData._id}`,
         null
@@ -50,6 +56,18 @@ const Dishes = ({ dishesData }: { dishesData: IDish[] }) => {
     } catch (error) {
       console.error("Error deleting dish:", error);
     }
+  };
+
+  const confirmDelete = async (): Promise<boolean> => {
+    // Check if window is defined (client-side) before using the library
+    if (typeof window !== "undefined") {
+      const { confirm } = await import("react-confirm-box");
+      const isConfirmed = await confirm(
+        "Are you sure you want to delete this restaurant?"
+      );
+      return isConfirmed;
+    }
+    return false;
   };
 
   const handleCreateOrUpdateDish = async (newDishData: IDish) => {

@@ -44,6 +44,11 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
 
   const handleDelete = async (rowData: IChef) => {
     try {
+      const isConfirmed = await confirmDelete();
+
+      if (!isConfirmed) {
+        return;
+      }
       if (chefOfTheWeek?._id === rowData._id) {
         setChefOfTheWeek(null);
         console.log("chef of the week after delete: " + chefOfTheWeek);
@@ -63,6 +68,18 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
     } catch (error) {
       console.error("Error deleting chef:", error);
     }
+  };
+
+  const confirmDelete = async (): Promise<boolean> => {
+    // Check if window is defined (client-side) before using the library
+    if (typeof window !== "undefined") {
+      const { confirm } = await import("react-confirm-box");
+      const isConfirmed = await confirm(
+        "Are you sure you want to delete this restaurant?"
+      );
+      return isConfirmed;
+    }
+    return false;
   };
 
   const handleCreateOrUpdateChef = (newChefData: IChef) => {
@@ -88,7 +105,6 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
       );
       return;
     }
-
     const response = await HttpClientService.put(`/chefs/${newChefData._id}`, {
       updatedChefData: newChefData,
     });
@@ -154,6 +170,7 @@ const Chefs = ({ chefsData }: { chefsData: IChef[] }) => {
       <div className="container">
         <div>
           <Sidebar />
+          {/* <div>{updateChefsData[0].isChefOfTheWeek.toString()}</div> */}
         </div>
         <div className="table-container">
           <ActionButton

@@ -51,6 +51,11 @@ const Restaurants = ({
 
   const handleDelete = async (rowData: IRestaurant) => {
     try {
+      const isConfirmed = await confirmDelete();
+
+      if (!isConfirmed) {
+        return;
+      }
       const response = await HttpClientService.delete(
         `/restaurants/${rowData._id}`,
         null
@@ -64,6 +69,18 @@ const Restaurants = ({
     } catch (error) {
       console.error("Error deleting restaurant:", error);
     }
+  };
+
+  const confirmDelete = async (): Promise<boolean> => {
+    // Check if window is defined (client-side) before using the library
+    if (typeof window !== "undefined") {
+      const { confirm } = await import("react-confirm-box");
+      const isConfirmed = await confirm(
+        "Are you sure you want to delete this restaurant?"
+      );
+      return isConfirmed;
+    }
+    return false;
   };
 
   const handleCreateOrUpdateRestaurant = async (
